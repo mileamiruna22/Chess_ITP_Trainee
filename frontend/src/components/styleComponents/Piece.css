@@ -1,0 +1,8 @@
+.piece {
+    font-size: 30px; /* Mărime decentă pentru simboluri */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
