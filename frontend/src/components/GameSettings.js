@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useGameContext, GameActions } from './GameContext';
-import SaveGameModal from './SaveGameModal';
-// import '../styleComponents/GameSettings.css';
+import { ChessApiService } from './ChessApiService';
+import './styleComponents/GameSettings.css';
 
 function GameSettings() {
   const { state, dispatch } = useGameContext();
   const { gameSettings } = state;
-  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
 
   const handleTimeControlChange = (event) => {
     const timeInMinutes = parseInt(event.target.value);
@@ -23,18 +22,29 @@ function GameSettings() {
     });
   };
 
-  const handleRestartGame = () => {
+  const handleRestartGame = async () => {
     if (window.confirm('Ești sigur că vrei să reîncepi jocul?')) {
-      dispatch({ type: GameActions.RESTART_GAME });
+      try {
+        // Creează un joc nou prin API
+        const newGame = await ChessApiService.createNewGame();
+        
+        // Actualizează state-ul cu noul joc
+        dispatch({ type: GameActions.SET_GAME_ID, payload: newGame.id });
+        dispatch({ type: GameActions.SET_GAME_STATE, payload: newGame });
+        
+        // Resetăm și timerul
+        dispatch({ 
+          type: GameActions.UPDATE_TIME, 
+          payload: {
+            whiteTime: gameSettings.timeControl * 60,
+            blackTime: gameSettings.timeControl * 60
+          }
+        });
+      } catch (error) {
+        console.error('Eroare la crearea unui joc nou:', error);
+        alert('A apărut o eroare la reinițializarea jocului.');
+      }
     }
-  };
-
-  const openSaveModal = () => {
-    setIsSaveModalOpen(true);
-  };
-
-  const closeSaveModal = () => {
-    setIsSaveModalOpen(false);
   };
 
   return (
@@ -80,21 +90,6 @@ function GameSettings() {
         <button className="restart-button" onClick={handleRestartGame}>
           Restart Joc
         </button>
-        <button className="save-button" onClick={openSaveModal}>
-          Salvează Joc
-        </button>
-      </div>
-      
-      <SaveGameModal isOpen={isSaveModalOpen} onClose={closeSaveModal} />
-      
-      <div className="future-feature">
-        <h4>Viitoare integrare cu .NET Core</h4>
-        <ul>
-          <li>Salvarea jocurilor</li>
-          <li>Multiplayer online</li>
-          <li>Statistici jucători</li>
-          <li>Autentificare utilizatori</li>
-        </ul>
       </div>
     </div>
   );

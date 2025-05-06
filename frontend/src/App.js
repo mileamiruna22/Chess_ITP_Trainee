@@ -9,7 +9,7 @@ function ChessGame() {
   const { state, dispatch } = useGameContext();
   const { currentPlayer, gameActive, whiteTime, blackTime } = state;
 
-  // Actualizeaza timerul
+  // Actualizează timerul
   useEffect(() => {
     let timerId;
     
@@ -21,8 +21,8 @@ function ChessGame() {
         dispatch({
           type: GameActions.UPDATE_TIME,
           payload: {
-            whiteTime: whiteUpdatedTime,
-            blackTime: blackUpdatedTime
+            whiteTime: whiteUpdatedTime >= 0 ? whiteUpdatedTime : 0,
+            blackTime: blackUpdatedTime >= 0 ? blackUpdatedTime : 0
           }
         });
         
@@ -42,6 +42,18 @@ function ChessGame() {
     
     return () => clearInterval(timerId);
   }, [currentPlayer, gameActive, whiteTime, blackTime, dispatch]);
+
+  // Ascultă tastatura pentru tasta ESC (pentru deselectare)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        dispatch({ type: GameActions.RESET_SELECTION });
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [dispatch]);
 
   return (
     <div className="chess-app">

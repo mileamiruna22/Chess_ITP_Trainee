@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGameContext } from './GameContext';
-// import '../styleComponents/GameInfo.css';
+import './styleComponents/GameInfo.css';
 
 function GameInfo() {
   const { state } = useGameContext();
