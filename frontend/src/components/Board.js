@@ -19,13 +19,13 @@ function Board() {
   } = state;
 
   const handleSquareClick = async (row, col) => {
-    // Ignoră click-ul dacă jocul s-a terminat
+    
     if (gameOver) return;
 
-    // Verifică dacă o piesă a fost deja selectată și dacă poziția curentă este o mutare validă
+    
     if (selectedPiece && possibleMoves.some(move => move[0] === row && move[1] === col)) {
       try {
-        // Efectuăm mutarea prin backend
+        
         const gameState = await ChessApiService.makeMove(
           gameId, 
           selectedPiece.row, 
@@ -34,29 +34,29 @@ function Board() {
           col
         );
         
-        // Actualizăm starea jocului cu răspunsul de la backend
+        
         dispatch({
           type: GameActions.SET_GAME_STATE,
           payload: gameState
         });
         
-        // Resetăm selecția după mutare
+        
         dispatch({ type: GameActions.RESET_SELECTION });
       } catch (error) {
         console.error('Eroare la efectuarea mutării:', error);
-        // Resetăm selecția în caz de eroare
+        
         dispatch({ type: GameActions.RESET_SELECTION });
       }
     } 
-    // Dacă utilizatorul a făcut click pe o piesă
+   
     else if (boardState[row][col]) {
       const piece = boardState[row][col];
       const pieceColor = piece.includes('white') ? 'white' : 'black';
       
-      // Verifică dacă piesa aparține jucătorului curent
+     
       if (pieceColor === currentPlayer) {
         try {
-          // Obținem mutările valide pentru piesă de la backend
+         
           const validMoves = await ChessApiService.getValidMoves(gameId, row, col);
           
           if (validMoves && validMoves.length > 0) {
@@ -73,7 +73,7 @@ function Board() {
         }
       }
     } else {
-      // Dacă utilizatorul a făcut click pe un spațiu gol, resetăm selecția
+      
       dispatch({ type: GameActions.RESET_SELECTION });
     }
   };
@@ -81,7 +81,7 @@ function Board() {
   const renderBoard = () => {
     const board = [];
     
-    // Determinăm ordinea rândurilor și coloanelor în funcție de setări
+   
     const rows = gameSettings.flipBoard
       ? [...Array(8).keys()]
       : [...Array(8).keys()].reverse();
@@ -98,14 +98,13 @@ function Board() {
         const squareColor = (isEvenRow && isEvenColumn) || (!isEvenRow && !isEvenColumn) ? 'white' : 'black';
         const piece = boardState[i][j];
         
-        // Determină dacă pătratul trebuie evidențiat ca mutare posibilă
+        
         const isHighlighted = gameSettings.showPossibleMoves && 
                               possibleMoves.some(move => move[0] === i && move[1] === j);
         
-        // Determină dacă pătratul conține piesa selectată
+        
         const isSelected = selectedPiece && selectedPiece.row === i && selectedPiece.col === j;
         
-        // Determină dacă regele este în șah
         const isCheck = piece && 
                         (piece === 'king-white' && check.white) || 
                         (piece === 'king-black' && check.black);

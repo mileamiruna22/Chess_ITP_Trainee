@@ -1,8 +1,8 @@
 import React from 'react';
-import '../components/styleComponents/Piece.css'; // Asigură-te că ai un fișier CSS pentru stilizare
+import '../components/styleComponents/Piece.css'; 
 
 function Piece({ piece }) {
-  // Vom folosi un sistem simplu de reprezentare text pentru început
+ 
   let pieceSymbol = '';
   switch (piece) {
     case 'pawn-white': pieceSymbol = '♙'; break;

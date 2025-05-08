@@ -76,7 +76,7 @@ namespace ChessBackend.Controllers
         {
             try
             {
-                // Convertim MoveDto în Move
+              
                 var move = new Move
                 {
                     FromRow = moveDto.FromRow,
@@ -104,7 +104,7 @@ namespace ChessBackend.Controllers
     }
 }
 
-// Clasa DTO pentru mutare
+
 namespace Backend.Models.Dtos
 {
     public class MoveDto

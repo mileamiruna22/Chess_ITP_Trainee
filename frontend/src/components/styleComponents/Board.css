@@ -30,7 +30,7 @@
   color: #856404;
 }
 
-/* Adăugăm coordonate pe marginea tablei */
+
 .coordinate-row {
   display: flex;
   justify-content: space-around;

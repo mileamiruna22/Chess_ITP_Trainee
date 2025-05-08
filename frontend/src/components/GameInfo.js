@@ -6,14 +6,14 @@ function GameInfo() {
   const { state } = useGameContext();
   const { moveHistory, capturedPieces, whiteTime, blackTime, currentPlayer, gameActive } = state;
 
-  // Formatare timp în format MM:SS
+  
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  // Functie pentru a ordona piesele capturate după valoare
+ 
   const orderPieces = (pieces) => {
     const pieceValue = {
       'pawn': 1,
@@ -30,7 +30,7 @@ function GameInfo() {
     });
   };
 
-  // Render piese capturate cu simbolurile Unicode
+  
   const renderCapturedPieces = (pieces, color) => {
     const symbols = {
       'pawn-white': '♙', 'rook-white': '♖', 'knight-white': '♘',
@@ -52,7 +52,7 @@ function GameInfo() {
     );
   };
 
-  // Gruparea mutărilor în perechi (alb/negru)
+  
   const groupMoves = () => {
     const groups = [];
     for (let i = 0; i < moveHistory.length; i += 2) {

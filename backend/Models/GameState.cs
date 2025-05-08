@@ -3,7 +3,6 @@ using System.Collections.Generic;
 namespace Backend.Models
 {
 
-    
     public class GameState
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();

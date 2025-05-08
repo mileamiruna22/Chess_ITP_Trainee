@@ -25,14 +25,14 @@ function GameSettings() {
   const handleRestartGame = async () => {
     if (window.confirm('Ești sigur că vrei să reîncepi jocul?')) {
       try {
-        // Creează un joc nou prin API
+        
         const newGame = await ChessApiService.createNewGame();
         
-        // Actualizează state-ul cu noul joc
+        
         dispatch({ type: GameActions.SET_GAME_ID, payload: newGame.id });
         dispatch({ type: GameActions.SET_GAME_STATE, payload: newGame });
         
-        // Resetăm și timerul
+      
         dispatch({ 
           type: GameActions.UPDATE_TIME, 
           payload: {

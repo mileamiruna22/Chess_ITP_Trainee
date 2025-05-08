@@ -9,7 +9,7 @@ function ChessGame() {
   const { state, dispatch } = useGameContext();
   const { currentPlayer, gameActive, whiteTime, blackTime } = state;
 
-  // Actualizează timerul
+  
   useEffect(() => {
     let timerId;
     
@@ -26,7 +26,7 @@ function ChessGame() {
           }
         });
         
-        // Verifică dacă timpul a expirat
+        
         if ((currentPlayer === 'white' && whiteUpdatedTime <= 0) || 
             (currentPlayer === 'black' && blackUpdatedTime <= 0)) {
           dispatch({
@@ -43,7 +43,7 @@ function ChessGame() {
     return () => clearInterval(timerId);
   }, [currentPlayer, gameActive, whiteTime, blackTime, dispatch]);
 
-  // Ascultă tastatura pentru tasta ESC (pentru deselectare)
+  
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {

@@ -174,7 +174,7 @@ export const GameProvider = ({ children }) => {
         const newGame = await ChessApiService.createNewGame();
         dispatch({ type: GameActions.SET_GAME_ID, payload: newGame.id });
         
-        // Verifică dacă starea tablei a fost returnată corect de la backend
+       
         if (newGame && newGame.boardState && 
             Array.isArray(newGame.boardState) && 
             newGame.boardState.length === 8) {
