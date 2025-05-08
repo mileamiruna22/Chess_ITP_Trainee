@@ -1,5 +1,3 @@
-
-
 const API_BASE_URL = 'http://localhost:5230/api/Chess'; 
 
 export const ChessApiService = {
@@ -69,11 +67,12 @@ export const ChessApiService = {
   // Execută o mutare
   makeMove: async (gameId, fromRow, fromCol, toRow, toCol) => {
     try {
-      const moveData = {
-        fromRow,
-        fromCol,
-        toRow,
-        toCol
+      // Structura modificată pentru a se potrivi cu clasa Move din back-end
+      const move = {
+        FromRow: fromRow,
+        FromCol: fromCol,
+        ToRow: toRow,
+        ToCol: toCol
       };
       
       const response = await fetch(`${API_BASE_URL}/${gameId}/move`, {
@@ -81,7 +80,7 @@ export const ChessApiService = {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(moveData)
+        body: JSON.stringify(move)
       });
       
       if (!response.ok) {

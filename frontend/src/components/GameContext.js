@@ -15,10 +15,37 @@ export const GameActions = {
   SET_GAME_ID: 'SET_GAME_ID'
 };
 
-// Starea inițială - vom prelua valorile reale de la backend
+function createInitialBoardState() {
+  const emptyBoard = Array(8).fill(null).map(() => Array(8).fill(null));
+  
+  // Adaugă pionii
+  for (let col = 0; col < 8; col++) {
+    emptyBoard[1][col] = 'pawn-black'; // Pionii negri
+    emptyBoard[6][col] = 'pawn-white'; // Pionii albi
+  }
+  
+  // Adaugă piesele grele pentru negru (rândul 0)
+  emptyBoard[0][0] = emptyBoard[0][7] = 'rook-black';
+  emptyBoard[0][1] = emptyBoard[0][6] = 'knight-black';
+  emptyBoard[0][2] = emptyBoard[0][5] = 'bishop-black';
+  emptyBoard[0][3] = 'queen-black';
+  emptyBoard[0][4] = 'king-black';
+  
+  // Adaugă piesele grele pentru alb (rândul 7)
+  emptyBoard[7][0] = emptyBoard[7][7] = 'rook-white';
+  emptyBoard[7][1] = emptyBoard[7][6] = 'knight-white';
+  emptyBoard[7][2] = emptyBoard[7][5] = 'bishop-white';
+  emptyBoard[7][3] = 'queen-white';
+  emptyBoard[7][4] = 'king-white';
+  
+  return emptyBoard;
+}
+
+
+
 const initialState = {
   gameId: null,
-  boardState: Array(8).fill(null).map(() => Array(8).fill(null)),
+  boardState: createInitialBoardState(), // Folosește funcția pentru a inițializa tabla
   currentPlayer: 'white', 
   selectedPiece: null, 
   possibleMoves: [], 
@@ -36,6 +63,7 @@ const initialState = {
     flipBoard: false 
   }
 };
+
 
 function gameReducer(state, action) {
   switch (action.type) {
@@ -140,15 +168,48 @@ export const useGameContext = () => useContext(GameContext);
 export const GameProvider = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
   
-  // Creăm un joc nou când se încarcă aplicația
   useEffect(() => {
     const initializeGame = async () => {
       try {
         const newGame = await ChessApiService.createNewGame();
         dispatch({ type: GameActions.SET_GAME_ID, payload: newGame.id });
-        dispatch({ type: GameActions.SET_GAME_STATE, payload: newGame });
+        
+        // Verifică dacă starea tablei a fost returnată corect de la backend
+        if (newGame && newGame.boardState && 
+            Array.isArray(newGame.boardState) && 
+            newGame.boardState.length === 8) {
+          dispatch({ type: GameActions.SET_GAME_STATE, payload: newGame });
+        } else {
+          console.warn('Backend nu a returnat o stare validă a tablei, folosesc starea inițială predefinită');
+          // Activăm jocul chiar dacă backend-ul nu a funcționat
+          dispatch({ 
+            type: GameActions.SET_GAME_STATE, 
+            payload: {
+              boardState: createInitialBoardState(),
+              currentPlayer: 'white',
+              moveHistory: [],
+              capturedPieces: { white: [], black: [] },
+              check: { white: false, black: false },
+              gameOver: null,
+              winner: null
+            }
+          });
+        }
       } catch (error) {
         console.error('Eroare la inițializarea jocului:', error);
+        // Activăm jocul chiar dacă apare o eroare
+        dispatch({ 
+          type: GameActions.SET_GAME_STATE, 
+          payload: {
+            boardState: createInitialBoardState(),
+            currentPlayer: 'white',
+            moveHistory: [],
+            capturedPieces: { white: [], black: [] },
+            check: { white: false, black: false },
+            gameOver: null,
+            winner: null
+          }
+        });
       }
     };
     

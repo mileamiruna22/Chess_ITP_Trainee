@@ -72,10 +72,19 @@ namespace ChessBackend.Controllers
         }
 
         [HttpPost("{gameId}/move")]
-        public ActionResult<GameStateDto> MakeMove(string gameId, [FromBody] Move move)
+        public ActionResult<GameStateDto> MakeMove(string gameId, [FromBody] MoveDto moveDto)
         {
             try
             {
+                // Convertim MoveDto în Move
+                var move = new Move
+                {
+                    FromRow = moveDto.FromRow,
+                    FromCol = moveDto.FromCol,
+                    ToRow = moveDto.ToRow,
+                    ToCol = moveDto.ToCol
+                };
+                
                 var gameState = _chessService.MakeMove(gameId, move);
                 return Ok(gameState);
             }
@@ -92,6 +101,17 @@ namespace ChessBackend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+    }
+}
 
+// Clasa DTO pentru mutare
+namespace Backend.Models.Dtos
+{
+    public class MoveDto
+    {
+        public int FromRow { get; set; }
+        public int FromCol { get; set; }
+        public int ToRow { get; set; }
+        public int ToCol { get; set; }
     }
 }
